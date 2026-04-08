@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Athene AI Core
 
-## Getting Started
+Enterprise Multi-Agent Orchestration Platform — Next.js frontend with Clerk auth and Nango integrations.
 
-First, run the development server:
+## Prerequisites
+
+- **Node.js** v20+
+- **pnpm** v9+ — install with `npm install -g pnpm`
+- Access to the team's Clerk and Nango dev credentials (ask the project lead)
+
+## Setup
+
+**1. Clone the repo**
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repo-url>
+cd athene-ai-core
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**2. Install dependencies**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**3. Configure environment variables**
 
-## Learn More
+Create a `.env.local` file in the project root:
 
-To learn more about Next.js, take a look at the following resources:
+```env
+# Clerk — get these from the Clerk dashboard (Development environment)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Clerk redirect config (copy as-is)
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/
+NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/onboarding
+NEXT_PUBLIC_CLERK_AFTER_SIGN_OUT_URL=/sign-in
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Nango — get the secret key from the Nango dashboard
+NANGO_SECRET_KEY=...
+```
 
-## Deploy on Vercel
+Ask the project lead for the shared dev values for these keys.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**4. Run the dev server**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Project Structure
+
+```
+app/
+  (auth)/          # Sign in / sign up pages (Clerk)
+  (dashboard)/     # Protected app — sidebar layout
+    page.tsx       # Command Center (/)
+    chat/          # Athene Intelligence chat (/chat)
+    agents/        # Agent Fleet (/agents)
+    sources/       # Knowledge Base (/sources)
+    integrations/  # Nango OAuth integrations (/integrations)
+    teams/         # Teams & access control (/teams)
+    settings/      # Workspace settings (/settings)
+  onboarding/      # Org setup + integration wizard
+  api/nango/       # Nango session token endpoint
+components/ui/     # Shared UI components
+lib/utils.ts       # cn() utility
+middleware.ts      # Clerk auth guard
+```
+
+## Tech Stack
+
+| Layer | Library |
+|-------|---------|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript 5 |
+| Styling | Tailwind CSS 4 |
+| UI primitives | shadcn / Base UI + CVA |
+| Auth | Clerk 7 (multi-tenant orgs) |
+| Integrations | Nango 0.69 (OAuth) |
+
+## Current State
+
+This is a UI-complete MVP. All data is mocked — there is no database or backend CRUD yet. The only real API endpoint is `/api/nango/session` for generating Nango connection tokens.
+
+## Common Scripts
+
+```bash
+pnpm dev      # Start dev server (localhost:3000)
+pnpm build    # Production build
+pnpm start    # Start production server
+pnpm lint     # Run ESLint
+```
